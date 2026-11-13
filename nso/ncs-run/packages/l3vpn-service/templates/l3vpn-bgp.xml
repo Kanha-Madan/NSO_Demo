@@ -1,0 +1,56 @@
+<config-template xmlns="http://tail-f.com/ns/config/1.0">
+  <devices xmlns="http://tail-f.com/ns/ncs">
+    <device>
+      <name>{/device-name}</name>
+      <config>
+        <router xmlns="http://tail-f.com/ned/cisco-ios-xr">
+          <bgp>
+            <bgp-no-instance>
+              <id>{$BGP_AS}</id>
+              <vrf>
+                <name>{/vrf/vrf-name}</name>
+                <rd>{$BGP_AS}:{/vrf/rd-value}</rd>
+                <address-family>
+                  <ipv4>
+                    <unicast>
+                      <label>
+                        <mode>
+                          <per-vrf/>
+                        </mode>
+                      </label>
+                      <bgp>
+                        <dampening/>
+                      </bgp>
+                      <redistribute>
+                        <connected/>
+                        <static/>
+                      </redistribute>
+                    </unicast>
+                  </ipv4>
+                  <?if {$IPV6_ENABLE = 'true'}?>
+                  <ipv6>
+                    <unicast>
+                      <label>
+                        <mode>
+                          <per-vrf/>
+                        </mode>
+                      </label>
+                      <bgp>
+                        <dampening/>
+                      </bgp>
+                      <redistribute>
+                        <connected/>
+                        <static/>
+                      </redistribute>
+                    </unicast>
+                  </ipv6>
+                  <?end?>
+                </address-family>
+              </vrf>
+            </bgp-no-instance>
+          </bgp>
+        </router>
+      </config>
+    </device>
+  </devices>
+</config-template>

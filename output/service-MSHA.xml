@@ -1,0 +1,29 @@
+<config xmlns="http://tail-f.com/ns/config/1.0">
+  <l3vpn-service xmlns="http://example.com/l3vpn-service">
+    <name>MSHA-ML3-1-810095</name>
+    <device-name>pe0</device-name>
+    <bandwidth>1676</bandwidth>
+    <vrf>
+      <vrf-name>MSHA-ML-M</vrf-name>
+      <rd-value>71728651</rd-value>
+      <route-target>
+        <rt-value>71728651</rt-value>
+      </route-target>
+    </vrf>
+    <qos>
+      <in-policy-name>in_STANDARD_ETH_1676_By_NSO</in-policy-name>
+      <out-policy-name>out_STANDARD_ETH_1676_By_NSO</out-policy-name>
+    </qos>
+    <interface>
+      <interface-type>GigabitEthernet</interface-type>
+      <interface-id>0/0/1</interface-id>
+      <subintf-id>5002</subintf-id>
+      <description>MSHA-ML3-1-810095-kjajj-1676k-MSHA-ML3-1-217121-05122024</description>
+      <svlan>3714</svlan>
+      <cvlan>1260</cvlan>
+      <ip-address>52.45.120.133</ip-address>
+      <subnet-mask>255.255.255.252</subnet-mask>
+      <ipv6-address>5936:3532::1/126</ipv6-address>
+    </interface>
+  </l3vpn-service>
+</config>

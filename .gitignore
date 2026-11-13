@@ -1,0 +1,23 @@
+# macOS / Office temp files
+.DS_Store
+~$*
+
+# NSO installers and install (Cisco-licensed, large, machine-specific)
+nso/installers/
+nso/nso661/
+nso/current
+nso/neds/
+
+# Simulated routers (contain SSH private keys)
+nso/netsim/
+
+# NSO runtime: ignore everything except our service package
+nso/ncs-run/*
+!nso/ncs-run/packages/
+nso/ncs-run/packages/*
+!nso/ncs-run/packages/l3vpn-service/
+
+# Build output
+**/load-dir/
+**/__pycache__/
+*.pyc

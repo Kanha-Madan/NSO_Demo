@@ -1,0 +1,66 @@
+<config-template xmlns="http://tail-f.com/ns/config/1.0">
+  <devices xmlns="http://tail-f.com/ns/ncs">
+    <device>
+      <name>{/device-name}</name>
+      <config>
+        <vrf xmlns="http://tail-f.com/ned/cisco-ios-xr">
+          <vrf-list>
+            <name>{/vrf/vrf-name}</name>
+            <address-family>
+              <ipv4>
+                <unicast>
+                  <import>
+                    <route-target>
+                      <?foreach {/vrf/route-target[direction='import' or direction='both']}?>
+                      <address-list><name>{$BGP_AS}:{rt-value}</name></address-list>
+                      <?end?>
+                    </route-target>
+                  </import>
+                  <export>
+                    <route-target>
+                      <?foreach {/vrf/route-target[direction='export' or direction='both']}?>
+                      <address-list><name>{$BGP_AS}:{rt-value}</name></address-list>
+                      <?end?>
+                    </route-target>
+                  </export>
+                  <maximum>
+                    <prefix>
+                      <limit>{/vrf/maximum-prefix/limit}</limit>
+                      <mid-thresh>{/vrf/maximum-prefix/threshold}</mid-thresh>
+                    </prefix>
+                  </maximum>
+                </unicast>
+              </ipv4>
+              <?if {$IPV6_ENABLE = 'true'}?>
+              <ipv6>
+                <unicast>
+                  <import>
+                    <route-target>
+                      <?foreach {/vrf/route-target[direction='import' or direction='both']}?>
+                      <address-list><name>{$BGP_AS}:{rt-value}</name></address-list>
+                      <?end?>
+                    </route-target>
+                  </import>
+                  <export>
+                    <route-target>
+                      <?foreach {/vrf/route-target[direction='export' or direction='both']}?>
+                      <address-list><name>{$BGP_AS}:{rt-value}</name></address-list>
+                      <?end?>
+                    </route-target>
+                  </export>
+                  <maximum>
+                    <prefix>
+                      <limit>{/vrf/maximum-prefix/limit}</limit>
+                      <mid-thresh>{/vrf/maximum-prefix/threshold}</mid-thresh>
+                    </prefix>
+                  </maximum>
+                </unicast>
+              </ipv6>
+              <?end?>
+            </address-family>
+          </vrf-list>
+        </vrf>
+      </config>
+    </device>
+  </devices>
+</config-template>

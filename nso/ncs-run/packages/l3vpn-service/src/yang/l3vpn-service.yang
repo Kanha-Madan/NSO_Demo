@@ -1,0 +1,71 @@
+module l3vpn-service {
+  yang-version 1.1;
+  namespace "http://example.com/l3vpn-service";
+  prefix l3vpn-service;
+
+  import ietf-inet-types { prefix inet; }
+  import tailf-common    { prefix tailf; }
+  import tailf-ncs       { prefix ncs; }
+
+  revision 2026-11-10 { description "Initial revision."; }
+
+  list l3vpn-service {
+    tailf:info "L3VPN customer service (VRF + QoS + interface + BGP)";
+    key name;
+
+    must "ipv6-enable = 'false' or interface/ipv6-address" {
+      error-message "interface/ipv6-address is required when ipv6-enable is true";
+    }
+
+    leaf name { type string; }
+
+    uses ncs:service-data;
+    ncs:servicepoint l3vpn-service-servicepoint;
+
+    leaf device-name {
+      mandatory true;
+      type leafref { path "/ncs:devices/ncs:device/ncs:name"; }
+    }
+    leaf ipv6-enable { type boolean; default true; }
+    leaf bgp-as      { type uint32; default 9730; }
+    leaf bandwidth   { mandatory true; type uint32 { range "1..100000000"; } units "kbps"; }
+
+    container vrf {
+      leaf vrf-name { mandatory true; type string { length "1..32"; } }
+      leaf rd-value { mandatory true; type uint32; }
+      list route-target {
+        key rt-value;
+        min-elements 1;
+        leaf rt-value  { type uint32; }
+        leaf direction { type enumeration { enum import; enum export; enum both; } default both; }
+      }
+      container maximum-prefix {
+        leaf limit     { type uint32; default 20000; }
+        leaf threshold { type uint8 { range "1..100"; } default 80; }
+      }
+    }
+
+    container qos {
+      leaf in-policy-name  { mandatory true; type string; }
+      leaf out-policy-name { mandatory true; type string; }
+      leaf mpls-exp   { type uint8 { range "0..7"; } default 0; }
+      leaf burst      { type uint32; units "bytes"; }   // optional override
+      leaf peak-burst { type uint32; units "bytes"; }   // optional override
+    }
+
+    container interface {
+      leaf interface-type { mandatory true; type enumeration { enum GigabitEthernet; } }
+      leaf interface-id   { mandatory true; type string { pattern '[0-9]+(/[0-9]+)*'; } }
+      leaf subintf-id     { mandatory true; type uint32 { range "1..2147483647"; } }
+      leaf description    { type string; }
+      leaf svlan          { mandatory true; type uint16 { range "1..4094"; } }
+      leaf cvlan          { mandatory true; type uint16 { range "1..4094"; } }
+      leaf ip-address     { mandatory true; type inet:ipv4-address-no-zone; }
+      leaf subnet-mask    { mandatory true; type inet:ipv4-address-no-zone; }
+      leaf ipv6-address {
+        when "../../ipv6-enable = 'true'";
+        type tailf:ipv6-address-and-prefix-length;
+      }
+    }
+  }
+}
